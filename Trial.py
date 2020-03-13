@@ -1,11 +1,12 @@
 def function1():
-    print "Calculas II sucks, but BOYET is daddy."
+    print "Calculas II sucks, but BOYET is daddy
+    print "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
 
 def function2():
     print ("HI How Are Yah")
 
 def function3():
-    pass
+    print "HOORAH NO FACETOFACE CLASSES"
 
 def function4():
     pass
