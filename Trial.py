@@ -2,6 +2,7 @@ def function1():
     pass
 
 def function2():
+    print ("HI How Are Yah")
     pass
 
 def function3():
