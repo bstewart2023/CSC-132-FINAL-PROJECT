@@ -5,7 +5,7 @@ def function2():
     print ("HI How Are Yah")
 
 def function3():
-    pass
+    print "HOORAH"
 
 def function4():
     pass
