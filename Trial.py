@@ -1,5 +1,5 @@
 def function1():
-    print "BOYET"
+    print "Calculas II sucks, but BOYET is daddy."
 
 def function2():
     print ("HI How Are Yah")
