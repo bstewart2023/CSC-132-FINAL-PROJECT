@@ -1,11 +1,11 @@
 def function1():
-    print "BOYET"
+    print "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
 
 def function2():
     print ("HI How Are Yah")
 
 def function3():
-    print "HOORAH"
+    print "HOORAH NO FACETOFACE CLASSES"
 
 def function4():
     pass
