@@ -1,5 +1,5 @@
 def function1():
-    pass
+    print "BOYET"
 
 def function2():
     print ("HI How Are Yah")
