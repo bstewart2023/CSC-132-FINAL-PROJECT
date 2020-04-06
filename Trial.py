@@ -1,4 +1,5 @@
 def function1():
+    print "Calculas II sucks, but BOYET is daddy
     print "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
 
 def function2():
