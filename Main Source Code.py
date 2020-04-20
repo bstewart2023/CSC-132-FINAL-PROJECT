@@ -4,7 +4,8 @@
 
 
 # imports any necessary libraries
-
+from picamera import PiCamera
+from time import sleep
 
 
 # defines classes/methods/processes needed for accessing IP camera
