@@ -6,7 +6,6 @@
 # imports any necessary libraries
 from picamera import PiCamera
 from time import sleep
-import matplotlib.image
 
 camera = PiCamera()
 camera.resolution = (2592, 1944)
@@ -17,8 +16,6 @@ sleep(2)
 camera.capture("IMAGES/image1.jpg")
 sleep(2)
 camera.capture("IMAGES/image2.jpg")
-
-read_img = matplotlib.image.imread("IMAGES/image.jpg")
 
 # defines classes/methods/processes needed for accessing IP camera
 
