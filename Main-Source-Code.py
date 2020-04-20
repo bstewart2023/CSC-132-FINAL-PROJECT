@@ -9,10 +9,13 @@ from time import sleep
 
 camera = PiCamera()
 camera.resolution = (2592, 1944)
+camera.hflip = True
 camera.start_preview()
-
+# Time taken before image is captured
 sleep(2)
-camera.capture("IMAGES/image.jpg")
+camera.capture("IMAGES/image1.jpg")
+sleep(2)
+camera.capture("IMAGES/image2.jpg")
 
 
 # defines classes/methods/processes needed for accessing IP camera
