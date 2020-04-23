@@ -23,12 +23,15 @@ from matplotlib import pyplot as plt
 
 # OpenCV image detection that turns image to specified shade
 # then maps and plots edges found in image
-img = cv2.imread('IMAGES/image.jpg', 100)
+img = cv2.imread('IMAGES/Demo-Spot.jpg', 100)
+grayImage = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+(thresh, blackAndWhiteImage) = cv2.threshold(grayImage, 160, 1000, cv2.THRESH_BINARY)
+cv2.imshow('Black white image', blackAndWhiteImage)
 edges = cv2.Canny(img, 160, 50, 3)
 
 ##edges = cv2.Canny(img, 60, 60, 3)
 
-plt.subplot(121),plt.imshow(img,cmap = 'gray')
+plt.subplot(121),plt.imshow(blackAndWhiteImage,cmap = 'gray')
 plt.title('Original Image'), plt.xticks([]), plt.yticks([])
 plt.subplot(122),plt.imshow(edges,cmap = 'gray')
 plt.title('Edge Image'), plt.xticks([]), plt.yticks([])
