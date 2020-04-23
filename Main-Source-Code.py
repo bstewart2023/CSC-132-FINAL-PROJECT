@@ -4,20 +4,20 @@
 
 
 # imports any necessary libraries
-from picamera import PiCamera
+##from picamera import PiCamera
 from time import sleep
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
 # Captures an image and saves it to a file
-camera = PiCamera()
-camera.resolution = (2592, 1944)
-camera.hflip = True
+##camera = PiCamera()
+##camera.resolution = (2592, 1944)
+##camera.hflip = True
 ##camera.start_preview()
 # Time taken before image is captured
-sleep(2)
-camera.capture("IMAGES/image.jpg")
+##sleep(2)
+##camera.capture("IMAGES/image.jpg")
 ##sleep(2)
 ##camera.capture("IMAGES/image6.jpg")
 
