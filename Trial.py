@@ -1,16 +1,16 @@
 def function1():
-    print "Calculas II sucks, but BOYET is daddy"
-    print "REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+    print ("Calculas II sucks, but BOYET is daddy")
+    print ("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
 
 def function2():
     print ("HI How Are Yah")
 
 def function3():
 
-    print "HOORAH NO FACETOFACE CLASSES"
+    print ("HOORAH NO FACETOFACE CLASSES")
 
 def function4():
-    print "AWW WE WANT FACETOFACE CLASSES"
+    print ("AWW WE WANT FACETOFACE CLASSES")
     
 ################################################
 # main part
