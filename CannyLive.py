@@ -50,18 +50,24 @@ def main():
 ##        cv2.namedWindow("imgOriginal", cv2.WINDOW_NORMAL)
 ##        cv2.namedWindow("imgCanny", cv2.WINDOW_NORMAL)
 
+##        array = ([[[270.5,335.5], [270.5,140.5], [400.5,140.5], [400.5,335.5]]])
+        pts = np.array([[270.5,335.5], [270.5,140.5], [400.5,140.5], [400.5,335.5]], np.int32)
+        cv2.polylines(imgCanny, [pts], True, (255,0,0), thickness=3)
+
         # Shows windows
-        cv2.imshow("imgOriginal", imgOriginal)
+##        cv2.imshow("imgOriginal", imgOriginal)
         cv2.imshow("imgCanny", imgCanny)
 
-        # Gets totale number of pixels, white pixesls, and black pixels from the Canny video feed
+        # Gets total number of pixels, white pixels, and black pixels from the Canny video feed
         pixels = imgCanny.size
         w_pixels = cv2.countNonZero(imgCanny)
         b_pixels = (pixels - w_pixels)
 
 
-        # open condition
-        if (w_pixels / pixels) <= 0.02:
+##        for pixels in pts:
+##        while(True):
+            # open condition
+        if (w_pixels / pixels) <= 0.014:
             if status == "[TAKEN]":
                 status = "[OPEN]"
                 print (status)
@@ -70,10 +76,9 @@ def main():
             if status == "[OPEN]":
                 status = "[TAKEN]"
                 print (status)
-            
+        
 
     cv2.destroyAllWindows()
-
     print (w_pixels / pixels)
 
     return
