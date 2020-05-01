@@ -7,7 +7,7 @@ import os
 ###################################################################################################
 def main():
 
-    # Uses primary webcam 
+    # Uses primary webcam
     capWebcam = cv2.VideoCapture(0)
 
 ##    print ("default resolution = " + str(capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH)) + "x" + str(capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT)))

@@ -10,7 +10,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
-img = cv2.imread("IMAGES/Parking.jpg", cv2.IMREAD_GRAYSCALE)
+img = cv2.imread("IMAGES/image10.jpg", cv2.IMREAD_GRAYSCALE)
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 blur = cv2.GaussianBlur(img, (3,3), 0)
 edges = cv2.Canny(blur,100,200,7)
@@ -24,14 +24,14 @@ for i in range(2):
 
 plt.show()
 
-# Captures an image and saves it to a file
-camera = PiCamera()
-camera.resolution = (2592, 1944)
-camera.hflip = True
-camera.start_preview()
-# Time taken before image is captured
-sleep(2)
-camera.capture("IMAGES/image.jpg")
+### Captures an image and saves it to a file
+##camera = PiCamera()
+##camera.resolution = (2592, 1944)
+##camera.hflip = True
+##camera.start_preview()
+### Time taken before image is captured
+##sleep(6)
+##camera.capture("IMAGES/image10.jpg")
 
 
 
