@@ -1,6 +1,7 @@
 # Opens a stream that applies canny edge detection live.
 # Displays original and cannied window
 
+import argparse
 import cv2
 import numpy as np
 import os
@@ -35,7 +36,7 @@ def main():
         if not blnFrameReadSuccessfully or imgOriginal is None:
             print ("error: frame not read from webcam\n")
             os.system("pause")
-            break
+            break        
 
         # Takes image and turns it to grayscale
         imgBlurred = cv2.GaussianBlur(imgOriginal, (7, 7), 1.4)
@@ -51,44 +52,45 @@ def main():
 ##        cv2.namedWindow("imgCanny", cv2.WINDOW_NORMAL)
 
 ##        array = ([[[270.5,335.5], [270.5,140.5], [400.5,140.5], [400.5,335.5]]])
-        pts = np.array([[270.5,335.5], [270.5,140.5], [400.5,140.5], [400.5,335.5]], np.int32)
-        cv2.polylines(imgCanny, [pts], True, (255,0,0), thickness=3)
+##        pts = np.array([[270.5,335.5], [270.5,140.5], [400.5,140.5], [400.5,335.5]], np.int32)
+##        cv2.polylines(imgCanny, [pts], True, (255,0,0), thickness=3)
 
         # Shows windows
-##        cv2.imshow("imgOriginal", imgOriginal)
         cv2.imshow("imgCanny", imgCanny)
+        cv2.imshow("imgOriginal", imgOriginal)
+        
 
         # Gets total number of pixels, white pixels, and black pixels from the Canny video feed
         pixels = imgCanny.size
         w_pixels = cv2.countNonZero(imgCanny)
         b_pixels = (pixels - w_pixels)
 
-        def filter_region(imgCanny, vertices):
-
-            mask = np.zeros_like(imgCanny)
-            if (len(mask.shape) == 2):
-                cv2.fillPoly(mask, vertices, 255)
-            else:
-                cv2.fillPoly(mask, vertices, (255)*mask.shape[2])
-            return cv2.bitwise_and(imgCanny, mask)
-
-        def select_region(imgCanny):
-            pt_1 = [270,335]
-            pt_2 = [270,140]
-            pt_3 = [400,140]
-            pt_4 = [400,335]
-
-            vertices = np.array([[pt_1, pt_2, pt_3, pt_4]], dtype = np.int32)
-            return filter_region(imgCanny, vertices)
-
-##          roi_images = list(map(select_region, imgCanny))
+##        def filter_region(imgCanny, vertices):
+##
+##            mask = np.zeros_like(imgCanny)
+##            if (len(mask.shape) == 2):
+##                cv2.fillPoly(mask, vertices, 255)
+##            else:
+##                cv2.fillPoly(mask, vertices, (255)*mask.shape[2])
+##            return cv2.bitwise_and(imgCanny, mask)
+##
+##        def select_region(imgCanny):
+##            pt_1 = [270,335]
+##            pt_2 = [270,140]
+##            pt_3 = [400,140]
+##            pt_4 = [400,335]
+##
+##            vertices = np.array([[pt_1, pt_2, pt_3, pt_4]], np.int32)
+##            return filter_region(imgCanny, vertices)
+##        
+##        roi_images = list(map(select_region, imgCanny))
 
 
 
 ##        for pixels in pts:
 ##        while(True):
             # open condition
-        if (w_pixels / pixels) <= 0.014:
+        if (w_pixels / pixels) <= 0.00650:
             if status == "[TAKEN]":
                 status = "[OPEN]"
                 print (status)
@@ -97,16 +99,16 @@ def main():
             if status == "[OPEN]":
                 status = "[TAKEN]"
                 print (status)
-        
 
-    cv2.destroyAllWindows()
+##    cv2.destroyAllWindows()
     print (w_pixels / pixels)
-
+    cv2.destroyAllWindows()
     return
+
+    
 
     
 ###################################################################################################
 ##if __name__ == "__main__":
 
 main()
-
