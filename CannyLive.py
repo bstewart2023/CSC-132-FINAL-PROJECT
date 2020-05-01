@@ -9,7 +9,7 @@ import os
 def main():
 
     # Uses primary webcam
-    capWebcam = cv2.VideoCapture("IMAGES/nocar.jpg")
+    capWebcam = cv2.VideoCapture(0)
 
 ##    print ("default resolution = " + str(capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH)) + "x" + str(capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
@@ -19,24 +19,24 @@ def main():
 
 ##    print ("updated resolution = " + str(capWebcam.get(cv2.CAP_PROP_FRAME_WIDTH)) + "x" + str(capWebcam.get(cv2.CAP_PROP_FRAME_HEIGHT)))
 
-##    # Checks for connection to webcam
-##    if capWebcam.isOpened() == False:
-##        print ("error: capWebcam not accessed successfully\n\n")
-##        os.system("pause")
-##        return
-##
-##    # Closes live feed windows with esc key
-##    while cv2.waitKey(1) != 27 and capWebcam.isOpened():
-##        blnFrameReadSuccessfully, imgOriginal = capWebcam.read()
-##
-##        # Checks if frames were read correctly through webcam
-##        if not blnFrameReadSuccessfully or imgOriginal is None:
-##            print ("error: frame not read from webcam\n")
-##            os.system("pause")
-##            break
+    # Checks for connection to webcam
+    if capWebcam.isOpened() == False:
+        print ("error: capWebcam not accessed successfully\n\n")
+        os.system("pause")
+        return
+
+    # Closes live feed windows with esc key
+    while cv2.waitKey(1) != 27 and capWebcam.isOpened():
+        blnFrameReadSuccessfully, imgOriginal = capWebcam.read()
+
+        # Checks if frames were read correctly through webcam
+        if not blnFrameReadSuccessfully or imgOriginal is None:
+            print ("error: frame not read from webcam\n")
+            os.system("pause")
+            break
 
         # Takes image and turns it to grayscale
-        imgBlurred = cv2.GaussianBlur(imgOriginal, (7, 7), 1.41)
+        imgBlurred = cv2.GaussianBlur(imgOriginal, (7, 7), 1.4)
         
         # Takes grayscaled image and blurs it
         imgGrayscale = cv2.cvtColor(imgBlurred, cv2.COLOR_BGR2GRAY)
@@ -45,8 +45,8 @@ def main():
         imgCanny = cv2.Canny(imgBlurred, 100, 100)
 
         # Allows for adjustable windows
-        cv2.namedWindow("imgOriginal", cv2.WINDOW_NORMAL)
-        cv2.namedWindow("imgCanny", cv2.WINDOW_NORMAL)
+##        cv2.namedWindow("imgOriginal", cv2.WINDOW_NORMAL)
+##        cv2.namedWindow("imgCanny", cv2.WINDOW_NORMAL)
 
         # Shows windows
         cv2.imshow("imgOriginal", imgOriginal)
