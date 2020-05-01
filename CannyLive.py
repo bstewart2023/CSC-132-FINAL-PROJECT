@@ -25,6 +25,8 @@ def main():
         os.system("pause")
         return
 
+    status = "[TAKEN]"
+
     # Closes live feed windows with esc key
     while cv2.waitKey(1) != 27 and capWebcam.isOpened():
         blnFrameReadSuccessfully, imgOriginal = capWebcam.read()
@@ -57,17 +59,22 @@ def main():
         w_pixels = cv2.countNonZero(imgCanny)
         b_pixels = (pixels - w_pixels)
 
-        if (w_pixels / pixels) < 0.0105 and (w_pixels / pixels) > 0.01:
-            print ("[OPEN]")
+
+        # open condition
+        if (w_pixels / pixels) <= 0.02:
+            if status == "[TAKEN]":
+                status = "[OPEN]"
+                print (status)
+        # if not open, then taken
         else:
-            print ("[TAKEN]")
+            if status == "[OPEN]":
+                status = "[TAKEN]"
+                print (status)
             
 
     cv2.destroyAllWindows()
 
-    print (pixels)
-    print(w_pixels)
-    print (b_pixels)
+    print (w_pixels / pixels)
 
     return
 
@@ -75,4 +82,6 @@ def main():
     
 ###################################################################################################
 ##if __name__ == "__main__":
+
 main()
+
