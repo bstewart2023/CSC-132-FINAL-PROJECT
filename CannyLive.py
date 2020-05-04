@@ -50,8 +50,8 @@ def main():
         # Allows for adjustable windows
 ##        cv2.namedWindow("imgOriginal", cv2.WINDOW_NORMAL)
 ##        cv2.namedWindow("imgCanny", cv2.WINDOW_NORMAL)
-
-##        array = ([[[270.5,335.5], [270.5,140.5], [400.5,140.5], [400.5,335.5]]])
+        
+        # displays polygon
 ##        pts = np.array([[270.5,335.5], [270.5,140.5], [400.5,140.5], [400.5,335.5]], np.int32)
 ##        cv2.polylines(imgCanny, [pts], True, (255,0,0), thickness=3)
 
@@ -65,31 +65,7 @@ def main():
         w_pixels = cv2.countNonZero(imgCanny)
         b_pixels = (pixels - w_pixels)
 
-##        def filter_region(imgCanny, vertices):
-##
-##            mask = np.zeros_like(imgCanny)
-##            if (len(mask.shape) == 2):
-##                cv2.fillPoly(mask, vertices, 255)
-##            else:
-##                cv2.fillPoly(mask, vertices, (255)*mask.shape[2])
-##            return cv2.bitwise_and(imgCanny, mask)
-##
-##        def select_region(imgCanny):
-##            pt_1 = [270,335]
-##            pt_2 = [270,140]
-##            pt_3 = [400,140]
-##            pt_4 = [400,335]
-##
-##            vertices = np.array([[pt_1, pt_2, pt_3, pt_4]], np.int32)
-##            return filter_region(imgCanny, vertices)
-##        
-##        roi_images = list(map(select_region, imgCanny))
-
-
-
-##        for pixels in pts:
-##        while(True):
-            # open condition
+        # open condition
         if (w_pixels / pixels) <= 0.00650:
             if status == "[TAKEN]":
                 status = "[OPEN]"
