@@ -67,12 +67,12 @@ def main():
 
         # open condition
         if (w_pixels / pixels) <= 0.00650:
-            if status == "[TAKEN]":
+            if status != "[OPEN]":
                 status = "[OPEN]"
                 print (status)
         # if not open, then taken
         else:
-            if status == "[OPEN]":
+            if status != "[TAKEN]":
                 status = "[TAKEN]"
                 print (status)
 
