@@ -6,28 +6,25 @@
 import cv2
 import numpy as np
 
-parking_spaces = []
-parking_spaces_results =[]
-
 class ROI(object):
     # a region of interest (ROI) has coordinates and two booleans for checking
     # conditions. the ROI is taken on a frame of live video capture.
     def __init__(self):
-        # Live video from the PI Cam
+        # live video from the pi cam
         self.capture = cv2.VideoCapture(0)
 
-        # Bounding box reference points and boolean if we are extracting coordinates
+        # bounding box reference points and boolean if we are extracting coordinates
         self.image_coordinates = []
         self.extract = False
         self.selected_ROI = False
 
         self.update()
 
-    # Function loop that updates frames and accepts key input
+    # function loop that updates frames and accepts key input
     def update(self):
         while(True):
             if self.capture.isOpened():
-                # Read the frame
+                # read the frame
                 (self.status, self.frame) = self.capture.read()
                 # convert the frame to be blurred, grayscaled and filter it using
                 # canny edge
@@ -47,25 +44,23 @@ class ROI(object):
                         key = cv2.waitKey(2)
                         cv2.imshow('image', self.clone)
 
-                        # Crop and display the cropped image
-                        # if the c key is pressed
+                        # crop and display the cropped image if the c key is pressed
                         if key == ord('c'):
                             self.crop_ROI()
-                            self.show_cropped_ROI()
-
-                        # Resume video
-                        # if the r key is pressed
+                            self.compare_pixels(parking_spaces)
+                            
+                        # resume videoif the r key is pressed
                         if key == ord('r'):
                             break
                         
-                # Close program with key'q'
+                # close program with key'q'
                 if key == ord('q'):
                     cv2.destroyAllWindows()
                     exit(1)
             else:
                 pass
 
-    # Function that appends rectangular x and y values based on cursor
+    # function that appends rectangular x and y values based on cursor
     def extract_coordinates(self, event, x, y, flags, parameters):
         # Record starting (x,y) coordinates on left mouse button click
         if event == cv2.EVENT_LBUTTONDOWN:
@@ -73,28 +68,25 @@ class ROI(object):
             parking_spaces.append((x,y))
             self.extract = True
 
-        # Record ending (x,y) coordintes on left mouse bottom release
+        # record ending (x,y) coordintes on left mouse bottom release
         elif event == cv2.EVENT_LBUTTONUP:
             self.image_coordinates.append((x,y))
             parking_spaces.append((x,y))
             self.extract = False
 
             self.selected_ROI = True
-
-            # add the points to the parking spaces array 
-            # Draw rectangle around ROI
+ 
+            # draw a rectangle around ROI
             cv2.rectangle(self.clone, self.image_coordinates[0], self.image_coordinates[1], (255,0,0), 2)
 
-        # Clear drawing boxes on right mouse button click
+        # clear drawing boxes on right mouse button click
         elif event == cv2.EVENT_RBUTTONDOWN:
             self.clone = imgCanny.copy()
             self.selected_ROI = False
 
-    # Function that crops region of interest
-    # and compares/counts pixels within it
+    # function that crops region of interest
     def crop_ROI(self):
-        if self.selected_ROI:
-            global cropped_image
+        if(self.selected_ROI):
             cropped_image = imgCanny.copy()
             loop = True
 
@@ -103,41 +95,36 @@ class ROI(object):
             x2 = self.image_coordinates[1][0]
             y2 = self.image_coordinates[1][1]
 
-##            global self.cropped_image
             cropped_image = cropped_image[y1:y2, x1:x2]
 
+            # initialize a list to hold the two points of every parking space
+            global parking_spaces
+            parking_spaces = []
 
-            # Sets initial status of roi
-            status = "[TAKEN]"
-
-
-            # Gets total number of pixels, white pixels, and black pixels from the cropped roi
-            pixels = cropped_image
-            w_pixels = (cv2.countNonZero(pixels))
-            b_pixels = ((pixels - w_pixels))
-            print (w_pixels)
-            print(parking_spaces)
-
-            # open condition
-            if w_pixels <= 30:
-                if status == "[TAKEN]":
-                    status = "[OPEN]"
-##                    print (status)
-            # if not open, then taken
-            else:
-                if status == "[OPEN]":
-                    status = "[TAKEN]"
-##                    print (status)
-
-
-##            print('Cropped image: {} {}'.format(self.image_coordinates[0], self.image_coordinates[1]))
-            print (status)
-##            print (pixels)
+            # append the cropped image to the parking spaces list
+            parking_spaces.append(cropped_image)
         else:
             print('Select ROI to crop before cropping')
 
-    def show_cropped_ROI(self):
-        cv2.imshow('ROI', cropped_image)
+    # takes the list of images and compares the white pixels in each image
+    def compare_pixels(lst):
+        # initialize a list for the status of each parking space
+        plot_results = []
+        for parking_space in lst:
+            # create variables for all pixels, white pixels and black pixels in a frame
+            pixels = lst[i]
+            w_pixels = cv2.countNonZero(pixels)
+            b_pixels = pixels - w_pixels
+
+            # if there are less than 30 white pixels in the ROI
+            if(w_pixels <= 30):
+                # then append the status of the parking spot to a list
+                parking_spaces_results.append(True)
+            else:
+                parking_spaces_results.append(False)
+
+        # return the results of the comparision
+        return parking_spaces_results
 
 if __name__ == '__main__':
-    static_ROI =ROI()
+    static_ROI = ROI()
