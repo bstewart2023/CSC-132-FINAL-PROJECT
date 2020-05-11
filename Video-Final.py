@@ -7,9 +7,10 @@ import cv2
 import numpy as np
 
 # initialize a list to hold the two points of every parking space
-global parking_spaces
-parking_spaces = []
-# np.array(parking_spaces) 
+##global parking_spaces
+global plot_results
+plot_results = []
+##parking_spaces = np.array(parking_spaces) 
 
 class ROI(object):
     # a region of interest (ROI) has coordinates and two booleans for checking
@@ -51,15 +52,14 @@ class ROI(object):
 
                         # crop and display the cropped image if the c key is pressed
                         if key == ord('c'):
-                            self.crop_ROI() 
-                            self.compare_pixels(parking_spaces)
-
-                        if key == ord("m"):
-                            print (self.compare_pixels(parking_spaces))
+                            plot_results.append(self.compare_pixels(self.crop_ROI()))
                             
                         # resume video if the r key is pressed
                         if key == ord('r'):
                             break
+                        
+                        if key == ord('m'):
+                            print(plot_results)
                     
                 # close program with key'q'
                 if key == ord('q'):
@@ -94,6 +94,7 @@ class ROI(object):
 
     # function that crops region of interest
     def crop_ROI(self):
+        # mightneed to convert to try-except
         if(self.selected_ROI):
             cropped_image = imgCanny.copy()
             loop = True
@@ -104,34 +105,36 @@ class ROI(object):
             y2 = self.image_coordinates[1][1]
 
             cropped_image = cropped_image[y1:y2, x1:x2]
+##          np_frame = cv2.imread("image", cropped_image)
+            #append the cropped image to the parking spaces list
+            #parking_spaces.append(np_frame)
+            return cropped_image
 
-            # append the cropped image to the parking spaces list
-            np.append(parking_spaces, cropped_image)
+            #self.compare_pixels(cropped_image)
+
         else:
-            print('Select ROI to crop before cropping')
+            return 'Select ROI to crop before cropping'
 
     # takes the list of images and compares the white pixels in each image
-    def compare_pixels(self, lst):
+    def compare_pixels(self, image):
         # initialize a list for the status of each parking space
-        plot_results = []
-        for parking_space in lst:
-            print(True)
+        #plot_results = []
+        #for parking_space in lst:
             # create variables for all pixels, white pixels and black pixels in a frame
-            pixels = lst[parking_space]
+            pixels = image
             w_pixels = cv2.countNonZero(pixels)
             b_pixels = pixels - w_pixels
 
             # if there are less than 30 white pixels in the ROI
             if(w_pixels <= 30):
-                print(False)
                 # then append the status of the parking spot to a list
-                plot_results.append(True)
+                return True
             else:
-                plot_results.append(False)
+                return False
 
         # return the results of the comparision
-        print(parking_spaces)
-        return plot_results
+
+        #return plot_results
 
 if __name__ == '__main__':
     static_ROI = ROI()
