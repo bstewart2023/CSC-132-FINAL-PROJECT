@@ -40,4 +40,9 @@ title_frame.place(relx=0.02, rely=0.03, relwidth=0.62, relheight=0.04)
 label = Label(title_frame, text = "Current View", bg = 'white')
 label.place(relwidth=1, relheight=1)
 
+ZeroLot = PhotoImage(file='IMAGES/ZeroLot.png')
+ZeroLot_label = Label(parking_frame, image=ZeroLot)
+ZeroLot_label.place(relwidth = 1, relheight = 1)
+##ZeroLot_label.pack(fill = BOTH)
+
 root.mainloop()
