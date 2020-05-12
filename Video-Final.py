@@ -10,7 +10,44 @@ import numpy as np
 ##global parking_spaces
 global plot_results
 plot_results = []
-##parking_spaces = np.array(parking_spaces) 
+##parking_spaces = np.array(parking_spaces)
+global parking_spaces
+parking_spaces = []
+
+class Point(object):
+    def __init__(self, x1, y1, x2, y2):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+
+    @property
+    def x1(self):
+        return self._x1
+    @x1.setter
+    def x1(self, other):
+        self._x1 = other
+    @property
+    def y1(self):
+        return self._y1
+    @y1.setter
+    def y1(self, other):
+        self._y1 = other
+    @property
+    def x2(self):
+        return self._x2
+    @x2.setter
+    def x2(self, other):
+        self._x2 = other
+    @property
+    def y2(self):
+        return self._y2
+    @y2.setter
+    def y2(self, other):
+        self._y2 = other
+
+    def __str__(self):
+        return ("({}, {}), ({}, {})".format(self._x1, self._y1, self._x2, self._y2))
 
 class ROI(object):
     # a region of interest (ROI) has coordinates and two booleans for checking
@@ -41,8 +78,8 @@ class ROI(object):
                 cv2.imshow('image', imgCanny)
                 key = cv2.waitKey(2)
 
-                # crop the image
-                if key == ord('c'):
+                # display the frame that was captured at the time f was pressed
+                if key == ord('f'):
                     self.clone = imgCanny.copy()
                     cv2.namedWindow('image')
                     cv2.setMouseCallback('image', self.extract_coordinates)
@@ -52,13 +89,20 @@ class ROI(object):
 
                         # crop and display the cropped image if the c key is pressed
                         if key == ord('c'):
-                            plot_results.append(self.compare_pixels(self.crop_ROI()))
+                            # save the image
+                            #image = self.crop_ROI()
+                            for i in range(len(parking_spaces)):
+                                result = self.check_spot(parking_spaces[i])
+                                plot_results.append(result)
                             
                         # resume video if the r key is pressed
                         if key == ord('r'):
+                            parking_spaces.clear()
+                            plot_results.clear()
                             break
                         
                         if key == ord('m'):
+                            print(parking_spaces)
                             print(plot_results)
                     
                 # close program with key'q'
@@ -73,13 +117,11 @@ class ROI(object):
         # Record starting (x,y) coordinates on left mouse button click
         if event == cv2.EVENT_LBUTTONDOWN:
             self.image_coordinates = [(x,y)]
-            #parking_spaces.append((x,y))
             self.extract = True
 
         # record ending (x,y) coordintes on left mouse bottom release
         elif event == cv2.EVENT_LBUTTONUP:
             self.image_coordinates.append((x,y))
-            #parking_spaces.append((x,y))
             self.extract = False
 
             self.selected_ROI = True
@@ -87,54 +129,52 @@ class ROI(object):
             # draw a rectangle around ROI
             cv2.rectangle(self.clone, self.image_coordinates[0], self.image_coordinates[1], (255,0,0), 2)
 
+            # save those coordinates to an array
+            parking_spaces.append(Point(self.image_coordinates[0][0],
+                                        self.image_coordinates[0][1],
+                                        self.image_coordinates[1][0],
+                                        self.image_coordinates[1][1]))
+
         # clear drawing boxes on right mouse button click
         elif event == cv2.EVENT_RBUTTONDOWN:
             self.clone = imgCanny.copy()
             self.selected_ROI = False
 
-    # function that crops region of interest
-    def crop_ROI(self):
-        # mightneed to convert to try-except
-        if(self.selected_ROI):
-            cropped_image = imgCanny.copy()
-            loop = True
+    # function that crops region of interest and returns the resulting image
+    def crop_ROI(self, point):
+        # if there is a selected ROI
+        #if(self.selected_ROI):
+        cropped_image = imgCanny.copy()
+        loop = True
+        
+        x1 = point.x1
+        y1 = point.y1
+        x2 = point.x2
+        y2 = point.y2
 
-            x1 = self.image_coordinates[0][0]
-            y1 = self.image_coordinates[0][1]
-            x2 = self.image_coordinates[1][0]
-            y2 = self.image_coordinates[1][1]
-
-            cropped_image = cropped_image[y1:y2, x1:x2]
-##          np_frame = cv2.imread("image", cropped_image)
-            #append the cropped image to the parking spaces list
-            #parking_spaces.append(np_frame)
-            return cropped_image
-
-            #self.compare_pixels(cropped_image)
-
-        else:
-            return 'Select ROI to crop before cropping'
+        cropped_image = cropped_image[y1:y2, x1:x2]
+        return cropped_image
+        #else:
+            #return 'Select ROI to crop before cropping'
 
     # takes the list of images and compares the white pixels in each image
     def compare_pixels(self, image):
-        # initialize a list for the status of each parking space
-        #plot_results = []
-        #for parking_space in lst:
-            # create variables for all pixels, white pixels and black pixels in a frame
-            pixels = image
-            w_pixels = cv2.countNonZero(pixels)
-            b_pixels = pixels - w_pixels
+        # create variables for all pixels, white pixels and black pixels in a frame
+        pixels = image
+        w_pixels = cv2.countNonZero(pixels)
+        b_pixels = pixels - w_pixels
 
-            # if there are less than 30 white pixels in the ROI
-            if(w_pixels <= 30):
-                # then append the status of the parking spot to a list
-                return True
-            else:
-                return False
+        # if there are less than 30 white pixels in the ROI
+        if(w_pixels <= 30):
+            # then append the status of the parking spot to a list
+            return True
+        else:
+            return False
 
-        # return the results of the comparision
-
-        #return plot_results
-
+    def check_spot(self, point):
+        image = self.crop_ROI(point)
+        result = self.compare_pixels(image)
+        return result
+                   
 if __name__ == '__main__':
     static_ROI = ROI()
