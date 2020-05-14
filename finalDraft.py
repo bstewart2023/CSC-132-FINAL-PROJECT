@@ -74,20 +74,13 @@ class App():
         
         self.window.mainloop()
 
-    # a function that switches the view for the live video
-    def switch_view(self):
-        if (self.switch_view):
-            self.switch_view = False
-        elif (not self.switch_view):
-            self.switch_view = True
-
     def update(self):
         # get a frame from the video source
         (success, frame) = self.capture.get_frame()
 
         if (success):
             if (self.switch_view):
-                self.convert(frame)
+                frame = self.convert(frame)
                 self.photo = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(frame))
                 self.canvas.create_image(0, 0, image=self.photo, anchor=NW)
             else:
@@ -96,15 +89,23 @@ class App():
 
         self.window.after(self.delay, self.update)
 
-    def select_spaces(self):
-        pass
-
     # a function that takes the current frame and converts it to blurred,
     # grayscale, and canny
     def convert(self, image):
         imgBlurred = cv2.GaussianBlur(image, (7, 7), 1.4)
         imgGrayscale = cv2.cvtColor(imgBlurred, cv2.COLOR_BGR2GRAY)
         imgCanny = cv2.Canny(imgGrayscale, 100, 100)
+        return imgCanny
+
+    def select_spaces(self):
+        pass
+
+    # a function that switches the view for the live video
+    def switch_view(self):
+        if (self.switch_view):
+            self.switch_view = False
+        elif (not self.switch_view):
+            self.switch_view = True
 
 ##############################
 ######## MAIN PROGRAM ########
