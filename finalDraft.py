@@ -1,179 +1,176 @@
 ###############################################################################
 # Collaborators: Corey Belk-Scroggins, Garrett Jones and Brianna Stewart
 # Date: 05/01/2020
-# Description:
+# Description: MAIN
 ###############################################################################
-import cv2
+import PIL.Image, PIL.ImageTk
+from tkinter import *
 import numpy as np
+import cv2
+import Point 
+import ROI
 
-# initialize a list to hold the two points of every parking space
-##global parking_spaces
-global plot_results
-plot_results = []
-##parking_spaces = np.array(parking_spaces)
-global parking_spaces
-parking_spaces = []
+# initialize width and height variable for the tkinter window
+WIDTH = 800
+HEIGHT = 500
 
-class Point(object):
-    def __init__(self, x1, y1, x2, y2):
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
+class VideoCapture():
+    def __init__(self, video_source=0):
+        self.capture = cv2.VideoCapture(video_source)
+        # if the video fails to open
+        if (not self.capture.isOpened()):
+            raise ValueError("Unable to open video source.", video_source)
 
-    @property
-    def x1(self):
-        return self._x1
-    @x1.setter
-    def x1(self, other):
-        self._x1 = other
-    @property
-    def y1(self):
-        return self._y1
-    @y1.setter
-    def y1(self, other):
-        self._y1 = other
-    @property
-    def x2(self):
-        return self._x2
-    @x2.setter
-    def x2(self, other):
-        self._x2 = other
-    @property
-    def y2(self):
-        return self._y2
-    @y2.setter
-    def y2(self, other):
-        self._y2 = other
+        # get the video source width and height
+        self.width = self.capture.get(cv2.CAP_PROP_FRAME_WIDTH)
+        self.height = self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-    def __str__(self):
-        return ("({}, {}), ({}, {})".format(self._x1, self._y1, self._x2, self._y2))
-
-class ROI(object):
-    # a region of interest (ROI) has coordinates and two booleans for checking
-    # conditions. the ROI is taken on a frame of live video capture.
-    def __init__(self):
-        # live video from the pi cam
-        self.capture = cv2.VideoCapture(0)
-
-        # bounding box reference points and boolean if we are extracting coordinates
-        self.image_coordinates = []
-        self.extract = False
-        self.selected_ROI = False
-
-        self.update()
-
-    # function loop that updates frames and accepts key input
-    def update(self):
-        while(True):
-            if self.capture.isOpened():
-                # read the frame
-                (self.status, self.frame) = self.capture.read()
-                # convert the frame to be blurred, grayscaled and filter it using
-                # canny edge
-                imgBlurred = cv2.GaussianBlur(self.frame, (7, 7), 1.4)
-                imgGrayscale = cv2.cvtColor(imgBlurred, cv2.COLOR_BGR2GRAY)
-                global imgCanny
-                imgCanny = cv2.Canny(imgGrayscale, 100, 100)
-                cv2.imshow('image', imgCanny)
-                key = cv2.waitKey(2)
-
-                # display the frame that was captured at the time f was pressed
-                if key == ord('f'):
-                    self.clone = imgCanny.copy()
-                    cv2.namedWindow('image')
-                    cv2.setMouseCallback('image', self.extract_coordinates)
-                    while(True):
-                        key = cv2.waitKey(2)
-                        cv2.imshow('image', self.clone)
-
-                        # crop and display the cropped image if the c key is pressed
-                        if key == ord('c'):
-                            # save the image
-                            #image = self.crop_ROI()
-                            for i in range(len(parking_spaces)):
-                                result = self.check_spot(parking_spaces[i])
-                                plot_results.append(result)
-                            
-                        # resume video if the r key is pressed
-                        if key == ord('r'):
-                            parking_spaces.clear()
-                            plot_results.clear()
-                            break
-                        
-                        if key == ord('m'):
-                            print(parking_spaces)
-                            print(plot_results)
-                    
-                # close program with key'q'
-                if key == ord('q'):
-                    cv2.destroyAllWindows()
-                    exit(1)
+    def get_frame(self):
+        if (self.capture.isOpened()):
+            (success, frame) = self.capture.read()
+            if (success):
+                # return a success flag and the current frame coverted
+                # to BGR
+                return (success, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
             else:
-                pass
-
-    # function that appends rectangular x and y values based on cursor
-    def extract_coordinates(self, event, x, y, flags, parameters):
-        # Record starting (x,y) coordinates on left mouse button click
-        if event == cv2.EVENT_LBUTTONDOWN:
-            self.image_coordinates = [(x,y)]
-            self.extract = True
-
-        # record ending (x,y) coordintes on left mouse bottom release
-        elif event == cv2.EVENT_LBUTTONUP:
-            self.image_coordinates.append((x,y))
-            self.extract = False
-
-            self.selected_ROI = True
- 
-            # draw a rectangle around ROI
-            cv2.rectangle(self.clone, self.image_coordinates[0], self.image_coordinates[1], (255,0,0), 2)
-
-            # save those coordinates to an array
-            parking_spaces.append(Point(self.image_coordinates[0][0],
-                                        self.image_coordinates[0][1],
-                                        self.image_coordinates[1][0],
-                                        self.image_coordinates[1][1]))
-
-        # clear drawing boxes on right mouse button click
-        elif event == cv2.EVENT_RBUTTONDOWN:
-            self.clone = imgCanny.copy()
-            self.selected_ROI = False
-
-    # function that crops region of interest and returns the resulting image
-    def crop_ROI(self, point):
-        # if there is a selected ROI
-        #if(self.selected_ROI):
-        cropped_image = imgCanny.copy()
-        loop = True
-        
-        x1 = point.x1
-        y1 = point.y1
-        x2 = point.x2
-        y2 = point.y2
-
-        cropped_image = cropped_image[y1:y2, x1:x2]
-        return cropped_image
-        #else:
-            #return 'Select ROI to crop before cropping'
-
-    # takes the list of images and compares the white pixels in each image
-    def compare_pixels(self, image):
-        # create variables for all pixels, white pixels and black pixels in a frame
-        pixels = image
-        w_pixels = cv2.countNonZero(pixels)
-        b_pixels = pixels - w_pixels
-
-        # if there are less than 30 white pixels in the ROI
-        if(w_pixels <= 30):
-            # then append the status of the parking spot to a list
-            return True
+                return (success, None)
         else:
-            return False
+            pass
+        
+    # release the video source when the object is destroyed
+    def __del__(self):
+        if (self.capture.isOpened()):
+            self.capture.release()
+        self.window.mainloop()
 
-    def check_spot(self, point):
-        image = self.crop_ROI(point)
-        result = self.compare_pixels(image)
-        return result
+class App():
+    def __init__(self, window, window_title, video_source=0):
+        self.window = window
+        self.window.title(window_title)
+        self.video_source = video_source
 
-ROI()
+        # open the video source
+        self.capture = VideoCapture(video_source)
+
+        # create a canvas object that can fit the above video source size
+        self.canvas = Canvas(window, width=WIDTH, height=HEIGHT)
+        self.canvas.pack()
+
+        # creates a button for setting the ROIs
+        self.btn_select = Button(window, text="Select Spaces", font=40, width=50, command=self.select_spaces)
+        self.btn_select.pack(anchor=CENTER, expand=True)
+
+        # creates a button for switching the view
+        self.btn_switch = Button(window, text="Switch View", font=40, width=50, command=self.switch_view)
+        self.btn_switch.pack(anchor=CENTER, expand=True)
+        
+        # create a variable the switch view button
+        self.switch_view = False
+        
+        # after it is called once, the update method wil be automatically
+        # be called every delay milliseconds
+        self.delay = 15
+        self.update()
+        
+        self.window.mainloop()
+
+    # a function that switches the view for the live video
+    def switch_view(self):
+        if (self.switch_view):
+            self.switch_view = False
+        elif (not self.switch_view):
+            self.switch_view = True
+
+    def update(self):
+        # get a frame from the video source
+        (success, frame) = self.capture.get_frame()
+
+        if (success):
+            if (self.switch_view):
+                self.convert(frame)
+                self.photo = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(frame))
+                self.canvas.create_image(0, 0, image=self.photo, anchor=NW)
+            else:
+                self.photo = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(frame))
+                self.canvas.create_image(0, 0, image=self.photo, anchor=NW)
+
+        self.window.after(self.delay, self.update)
+
+    def select_spaces(self):
+        pass
+
+    # a function that takes the current frame and converts it to blurred,
+    # grayscale, and canny
+    def convert(self, image):
+        imgBlurred = cv2.GaussianBlur(image, (7, 7), 1.4)
+        imgGrayscale = cv2.cvtColor(imgBlurred, cv2.COLOR_BGR2GRAY)
+        imgCanny = cv2.Canny(imgGrayscale, 100, 100)
+
+##############################
+######## MAIN PROGRAM ########
+##############################
+App(Tk(), "Parking Detection")
+
+
+
+# calls the live camera and parking detection algorithm
+#ROI.ROI()
+##
+##HEIGHT = 500
+##WIDTH = 800
+##
+### creates the tkinter window and names it
+##window = Tk()
+##window.title("Parking Detection")
+##canvas = Canvas(window, bg = 'black', height=HEIGHT, width=WIDTH)
+##canvas.pack(expand = YES, fill = BOTH)
+##
+### add a background image to window
+##background_image = PhotoImage(file='IMAGES/Background.png')
+##background_label = Label(window, image=background_image)
+##background_label.place(relwidth=1, relheight=1)
+##
+##frame = Frame(window, bg='black')
+##frame.place(relx=0.655, rely=0.03, relwidth=0.33, relheight=0.6)
+##
+### creates a button for setting the ROIs (F)
+##button = Button(frame, text="Reserve Space(s)", font=40)# command = lambda: 
+##button.place(relx=0, rely=0.75, relheight=.2, relwidth=1)
+##
+### create a button for checking the parking spaces (C)
+##button = Button(frame, text="Check Availability", font=40)# command = lambda: 
+##button.place(relx=0, relheight=.2, relwidth=1)
+##
+### creates a button for changing the view of the live window (orig to canny)
+##button = Button(frame, text="Switch View", font=40)# command = lambda: ROI())
+##button.place(relx=0, rely=0.5, relheight=.2, relwidth=1)
+##
+##button = Button(frame, text="Update", font=40)#, command = lambda: )
+##button.place(relx=0, rely=0.25, relheight=.2, relwidth=1)
+##
+##
+##
+##
+##
+##parking_frame = Frame(window, bg='gray', bd=5)
+##parking_frame.place(relx=0.02, rely=0.075, relwidth=0.62, relheight=0.70)
+##
+##parking_label = Label(parking_frame)
+##parking_label.place(relx = 0, rely = 0, relwidth = 1, relheight = 1)
+##
+##output_frame = Frame(window, bg='white', bd=5)
+##output_frame.place(relx=0.02, rely=0.8, relwidth=0.62, relheight=0.17)
+##
+##title_frame = Frame(window, bg='gray', bd=2)
+##title_frame.place(relx=0.02, rely=0.03, relwidth=0.62, relheight=0.04)
+##
+##label = Label(title_frame, text = "Current View", bg = 'white')
+##label.place(relwidth=1, relheight=1)
+##
+###ZeroLot = PhotoImage(file='IMAGES/ZeroLot.png')
+###ZeroLot_label = Label(parking_frame, image=ZeroLot)
+###ZeroLot_label.place(relwidth = 1, relheight = 1)
+####ZeroLot_label.pack(fill = BOTH)
+##
+##window.mainloop()
+##
