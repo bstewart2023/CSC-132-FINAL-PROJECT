@@ -112,8 +112,6 @@ class App():
 ##############################
 App(Tk(), "Parking Detection")
 
-
-
 # calls the live camera and parking detection algorithm
 #ROI.ROI()
 ##
