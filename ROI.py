@@ -131,9 +131,9 @@ class ROI(object):
         # if there are less than 30 white pixels in the ROI
         if(w_pixels <= 30):
             # then append the status of the parking spot to a list
-            return True
+            return 'OPEN'
         else:
-            return False
+            return 'TAKEN'
 
     def check_spot(self, point):
         image = self.crop_ROI(point)
