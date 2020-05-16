@@ -9,7 +9,7 @@ import cv2
 import Point 
 
 # initialize width and height variable for the tkinter window
-WIDTH = 800
+WIDTH = 850
 HEIGHT = 500
 
 # initialize the lists for the parking spaces coordinates and results
@@ -40,40 +40,62 @@ class VideoCapture():
         self.window.mainloop()
 
 class App():
-    def __init__(self, window, window_title, video_source=0):
+    def __init__(self, window, window_title, video_source = 0):
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
+
+        background_image = PhotoImage(file='IMAGES/Background.png')
+        background_label = Label(self.window, image=background_image)
+        background_label.place(relwidth=1, relheight=1)
 
         # open the video source
         self.capture = VideoCapture(video_source)
 
         # create a canvas object that can fit the above video source size
-        self.canvas = Canvas(window, width=WIDTH, height=HEIGHT)
+        self.canvas = Canvas(window, bg = 'black', width=WIDTH, height=HEIGHT, highlightthickness = 0)
         self.canvas.pack(expand=YES, fill =BOTH)
+
+        output_frame = Frame(window, bg='gray', bd=0)
+        output_frame.place(relx=0, rely=0.8, relwidth=0.753, relheight=0.2)
+
+        label = Label(output_frame, text = "Current View", bg = 'white')
+        label.place(relwidth=1, relheight=1)
+
+        title_frame = Frame(window, bg='gray', bd=2)
+        title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.121)
+
+        title_label = Label(title_frame,  bg='white', bd=2)
+        title_label.place(relwidth=1, relheight=1)
+
+##        entry = Entry(output_frame, font=40)
+##        entry.place(relwidth=1, relheight=1)
+
+        buttons_frame = Canvas((window), bg='black', highlightthickness = 0)
+        buttons_frame.place(relx=0.753, rely=.12, relwidth=0.25, relheight=0.62)
 
         # creates a ROI object
         ROI.ROI = ROI()
 
         # creates a button for setting the ROIs
-        self.btn_open = Button(window, text="Open Current Frame", font=40, width=50, command=ROI.ROI.open_frame)
-        self.btn_open.pack(anchor=CENTER, expand=True)
+        self.btn_open = Button(buttons_frame, text="Capture Frame", font=('Georgia',20), width=30, borderwidth=0, highlightthickness=0, border = "8", activebackground="white",command=ROI.ROI.open_frame)
+        self.btn_open.pack(anchor='w', expand=True)
 
         # creates a button for setting the ROIs
-        self.btn_select = Button(window, text="Select ROIs", font=40, width=50, command=ROI.ROI.select_ROIs)
-        self.btn_select.pack(anchor=CENTER, expand=True)
+        self.btn_select = Button(buttons_frame, text="Select ROIs", font=('Georgia',20), width=30, borderwidth=0, highlightthickness=0, border = "8", activebackground="white", command=ROI.ROI.select_ROIs)
+        self.btn_select.pack(anchor='w', expand=True)
 
         # creates a button for switching the view
-        self.btn_switch = Button(window, text="Switch View", font=40, width=50, command=self.switch_view)
-        self.btn_switch.pack(anchor=CENTER, expand=True)
+        self.btn_switch = Button(buttons_frame, text="Switch View", font=('Georgia',20), width=30, borderwidth=0, highlightthickness=0, border = "8", activebackground="white", command=self.switch_view)
+        self.btn_switch.pack(anchor='w', expand=True)
 
         # creates a button for getting the results
-        self.btn_results = Button(window, text="Get Results", font=40, width=50, command=ROI.ROI.results)
-        self.btn_results.pack(anchor=CENTER, expand=True)
+        self.btn_results = Button(buttons_frame, text="Get Results", font=('Georgia',20), width=30, borderwidth=0, highlightthickness=0, border = "8", activebackground="white", command=ROI.ROI.results)
+        self.btn_results.pack(anchor='w', expand=True)
         
         # creates a button for reset the lists and closing the windows
-        self.reset = Button(window, text="Reset", font=40, width=50, command=ROI.ROI.reset)
-        self.reset.pack(anchor=CENTER, expand=True)
+        self.btn_reset = Button(buttons_frame, text="Reset", font=('Georgia',20), width=30, borderwidth=0, highlightthickness=0, border = "8", activebackground="white", command=ROI.ROI.reset)
+        self.btn_reset.pack(anchor='w', expand=True)
 
         # create a variable for the switch view button
         self.switch_view = False
