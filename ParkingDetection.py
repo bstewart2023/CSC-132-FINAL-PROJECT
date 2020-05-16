@@ -183,7 +183,7 @@ class ROI(App):
 
         string = ""
         for i in range(len(plot_results)):
-            string += "Parking spot #{} is {}. ".format(i+1, plot_results[i])
+            string += "Parking spot #{} is {}.\n ".format(i+1, plot_results[i])
 
 ##        print(string)
 
@@ -192,7 +192,7 @@ class ROI(App):
         def output():
             return string
             
-        output_label = Label(output_frame, bg = 'white', font = ('Georgia', 30))
+        output_label = Label(output_frame, bg = 'white', font = ('Georgia', 15))
         output_label.place(relwidth=1, relheight=1)
         output_label['text'] = output()
 
