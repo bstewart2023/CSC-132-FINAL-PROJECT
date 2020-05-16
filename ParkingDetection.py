@@ -56,11 +56,12 @@ class App():
         self.canvas = Canvas(window, bg = 'black', width=WIDTH, height=HEIGHT, highlightthickness = 0)
         self.canvas.pack(expand=YES, fill =BOTH)
 
+        global output_frame
         output_frame = Frame(window, bg='gray', bd=0)
         output_frame.place(relx=0, rely=0.8, relwidth=0.753, relheight=0.2)
 
-        label = Label(output_frame, text = "Current View", bg = 'white')
-        label.place(relwidth=1, relheight=1)
+        output_label = Label(output_frame, bg = 'white')
+        output_label.place(relwidth=1, relheight=1)
 
         title_frame = Frame(window, bg='gray', bd=2)
         title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.121)
@@ -73,6 +74,11 @@ class App():
 
         buttons_frame = Canvas((window), bg='black', highlightthickness = 0)
         buttons_frame.place(relx=0.753, rely=.12, relwidth=0.25, relheight=0.62)
+
+##        def output():
+##            print (len(parking_spaces))
+
+##            output_label['text'] = output()
 
         # creates a ROI object
         ROI.ROI = ROI()
@@ -143,7 +149,7 @@ class App():
         elif (not self.switch_view):
             self.switch_view = True
 
-class ROI():
+class ROI(App):
     def __init__(self):
         self.image_coordinates = []
         self.extract = False
@@ -171,15 +177,24 @@ class ROI():
                 plot_results.append(result)
 
     # a function that prints the results of the parking spaces and results list to terminal
-    def results(self):
+    def results(App):
         #print(parking_spaces)
         #print(plot_results)
 
         string = ""
         for i in range(len(plot_results)):
-            string += "Parking spot: {}, Status: {}; ".format(i, plot_results[i])
+            string += "Parking spot #{} is {}. ".format(i+1, plot_results[i])
 
-        print(string)
+##        print(string)
+
+        # a function that also runs when 'Get Results' button is pressed
+        # returning user output
+        def output():
+            return string
+            
+        output_label = Label(output_frame, bg = 'white', font = ('Georgia', 30))
+        output_label.place(relwidth=1, relheight=1)
+        output_label['text'] = output()
 
     # a function that appends rectangular x and y values based on cursor
     def extract_coordinates(self, event, x, y, flags, parameters):
