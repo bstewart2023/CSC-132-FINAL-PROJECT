@@ -156,6 +156,8 @@ class ROI(App):
         cv2.namedWindow("Select ROIs")
         # wait for mouse callback
         cv2.setMouseCallback("Select ROIs", self.extract_coordinates)
+        global frame
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         cv2.imshow("Select ROIs", frame)
 
     # a function that checks each region if there is a car there
