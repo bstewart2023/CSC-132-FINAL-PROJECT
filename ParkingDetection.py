@@ -44,11 +44,7 @@ class App():
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
-
-        background_image = PhotoImage(file='IMAGES/Background.png')
-        background_label = Label(self.window, image=background_image)
-        background_label.place(relwidth=1, relheight=1)
-
+        
         # open the video source
         self.capture = VideoCapture(video_source)
 
@@ -72,7 +68,7 @@ class App():
         title_frame = Frame(window, bg='black', highlightthickness = 4, highlightcolor = 'cyan')
         title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.121)
 
-        title_label = Label(title_frame,  bg='black', foreground = 'white', font = ('Georgia', 15), anchor = 'nw')
+        title_label = Label(title_frame,  bg='black', foreground = 'white', font = ('Georgia', 14), anchor = 'nw')
         title_label.place(relwidth=1, relheight=1)
         title_label['text'] = title()
 
@@ -161,8 +157,6 @@ class ROI(App):
         # wait for mouse callback
         cv2.setMouseCallback("Select ROIs", self.extract_coordinates)
         cv2.imshow("Select ROIs", frame)
-        cv2.rectangle(frame, self.extract_coordinates, (255,0,0), 2)
-
 
     # a function that checks each region if there is a car there
     def select_ROIs(self):
