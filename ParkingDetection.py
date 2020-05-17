@@ -57,28 +57,28 @@ class App():
         self.canvas.pack(expand=YES, fill =BOTH)
 
         global output_frame
-        output_frame = Frame(window, bg='gray', bd=0)
-        output_frame.place(relx=0, rely=0.8, relwidth=0.753, relheight=0.2)
+        output_frame = Frame(window, bg='black', bd=0, highlightthickness = 8)
+        output_frame.place(relx=0, rely=0.8, relwidth=1, relheight=0.2)
 
-        output_label = Label(output_frame, bg = 'white')
-        output_label.place(relwidth=1, relheight=1)
+        # string that represents the title label of the app
+        string = "Welcome to the solution for all of your parking needs.\n" \
+                 "To check availability capture a frame, select your regions of interest, and click |Get Results|.\n" \
 
-        title_frame = Frame(window, bg='gray', bd=2)
+        # function needed to disaply title
+        def title():
+            return string
+
+        # creates a title frame and label
+        title_frame = Frame(window, bg='black', highlightthickness = 4, highlightcolor = 'cyan')
         title_frame.place(relx=0, rely=0, relwidth=1, relheight=0.121)
 
-        title_label = Label(title_frame,  bg='white', bd=2)
+        title_label = Label(title_frame,  bg='black', foreground = 'white', font = ('Georgia', 15), anchor = 'nw')
         title_label.place(relwidth=1, relheight=1)
+        title_label['text'] = title()
 
-##        entry = Entry(output_frame, font=40)
-##        entry.place(relwidth=1, relheight=1)
-
+        # creates frame for buttons to be laid
         buttons_frame = Canvas((window), bg='black', highlightthickness = 0)
-        buttons_frame.place(relx=0.753, rely=.12, relwidth=0.25, relheight=0.62)
-
-##        def output():
-##            print (len(parking_spaces))
-
-##            output_label['text'] = output()
+        buttons_frame.place(relx=0.753, rely=.12, relwidth=0.25, relheight=0.68)
 
         # creates a ROI object
         ROI.ROI = ROI()
@@ -161,6 +161,8 @@ class ROI(App):
         # wait for mouse callback
         cv2.setMouseCallback("Select ROIs", self.extract_coordinates)
         cv2.imshow("Select ROIs", frame)
+        cv2.rectangle(frame, self.extract_coordinates, (255,0,0), 2)
+
 
     # a function that checks each region if there is a car there
     def select_ROIs(self):
@@ -180,23 +182,23 @@ class ROI(App):
     def results(App):
         #print(parking_spaces)
         #print(plot_results)
-
+        # formatting for output string
         string = ""
         for i in range(len(plot_results)):
-            string += "Parking spot #{} is {}.\n ".format(i+1, plot_results[i])
-
-##        print(string)
+            string += "Parking spot #{} is {}.  |  ".format(i+1, plot_results[i])
 
         # a function that also runs when 'Get Results' button is pressed
         # returning user output
         def output():
             return string
-            
-        output_label = Label(output_frame, bg = 'white', font = ('Georgia', 15))
+
+        # creates label for output
+        output_label = Label(output_frame, bg = 'black', font = ('Georgia', 13), foreground = 'white', anchor = 'nw', wraplength = '8.5i', justify = LEFT)
         output_label.place(relwidth=1, relheight=1)
         output_label['text'] = output()
 
     # a function that appends rectangular x and y values based on cursor
+
     def extract_coordinates(self, event, x, y, flags, parameters):
         # Record starting (x,y) coordinates on left mouse button click
         if event == cv2.EVENT_LBUTTONDOWN:
