@@ -159,6 +159,7 @@ class ROI(App):
         global frame
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         cv2.imshow("Select ROIs", frame)
+        cv2.waitKey(15000)
 
     # a function that checks each region if there is a car there
     def select_ROIs(self):
@@ -179,9 +180,16 @@ class ROI(App):
         #print(parking_spaces)
         #print(plot_results)
         # formatting for output string
-        string = ""
+        arr = []
         for i in range(len(plot_results)):
-            string += "Parking spot #{} is {}.  |  ".format(i+1, plot_results[i])
+            if (plot_results[i] == True):
+                arr.append("Open")
+            else:
+                arr.append("Taken")
+        
+        string = ""
+        for i in range(len(arr)):
+            string += "Parking spot #{} is {}.  |  ".format(i+1, arr[i])
 
         # a function that also runs when 'Get Results' button is pressed
         # returning user output
@@ -189,7 +197,7 @@ class ROI(App):
             return string
 
         # creates label for output
-        output_label = Label(output_frame, bg = 'black', font = ('Georgia', 13), foreground = 'white', anchor = 'nw', wraplength = '8.5i', justify = LEFT)
+        output_label = Label(output_frame, bg = 'black', font = ('Georgia', 13), foreground = 'white', anchor = 'nw', wraplength = '8i', justify = LEFT)
         output_label.place(relwidth=1, relheight=1)
         output_label['text'] = output()
 
